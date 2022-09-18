@@ -18,12 +18,15 @@ node {
         }
     }
 
+    stage('Manual Approval') {
+        input message: 'Lanjutkan ke tahap Deploy?'
+    }
+
     stage('Deploy') {
         def VOLUME = '$(pwd)/sources:/src'
         def IMAGE = 'cdrx/pyinstaller-linux:python2'
 
         dir(path: env.BUILD_ID) { 
-            input message: 'Lanjutkan ke tahap Deploy?'
             unstash(name: 'compiled-results')
             sh "docker run --rm -v ${VOLUME} ${IMAGE} 'pyinstaller -F add2vals.py'"
             archiveArtifacts "sources/dist/add2vals"
